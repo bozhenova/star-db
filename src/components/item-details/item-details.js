@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
 
-import SwapiService from '../../services/swapi-service';
-
 import './item-details.css';
 
 const Record = ({ item, field, label }) => {
@@ -16,8 +14,6 @@ const Record = ({ item, field, label }) => {
 export { Record };
 
 export default class ItemDetails extends Component {
-  swapiService = new SwapiService();
-
   state = {
     item: null,
     image: null
@@ -75,21 +71,3 @@ export default class ItemDetails extends Component {
     );
   }
 }
-
-// const { item, loading, image } = this.state;
-
-//     // const { id, name, gender, birthYear, eyeColor } = item;
-
-//     const span = !(item || loading) ? (
-//       <span className='item-placeholder'>Select an item from the list</span>
-//     ) : null;
-//     const spinner = loading && <Spinner />;
-//     const content =
-//       !loading && item ? <ItemView item={item} image={image} /> : null;
-
-//     return (
-//       <div className='item-details card jumbotron'>
-//         {span}
-//         {spinner}
-//         {content}
-//       </div>
