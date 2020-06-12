@@ -1,33 +1,37 @@
 import React, { Component } from 'react';
 
 import Spinner from '../spinner/spinner';
-import ErrorBoundary from '../error-boundary';
 
-const withData = (View, getData) => {
+const withData = View => {
   return class extends Component {
     state = {
       data: null
     };
 
     componentDidMount() {
-      getData().then(data => {
+      this.update();
+    }
+
+    componentDidUpdate(prevProps) {
+      if (this.props.getData !== prevProps.getData) {
+        this.update();
+      }
+    }
+    update() {
+      this.props.getData().then(data => {
         this.setState({
           data
         });
       });
     }
-
     render() {
       const { data } = this.state;
+
       if (!data) {
         return <Spinner />;
       }
 
-      return (
-        <ErrorBoundary>
-          <View {...this.props} data={data} />
-        </ErrorBoundary>
-      );
+      return <View {...this.props} data={data} />;
     }
   };
 };
