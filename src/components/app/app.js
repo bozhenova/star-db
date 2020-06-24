@@ -4,11 +4,15 @@ import Header from '../header';
 import RandomPlanet from '../random-planet';
 import ErrorBoundary from '../error-boundary';
 import DummySwapiService from '../../services/dummy-swapi-service';
+import SwapiService from '../../services/swapi-service';
+
 import { PeoplePage, PlanetsPage, StarshipsPage } from '../pages';
 import { SwapiServiceProvider } from '../swapi-service-context';
 
 import './app.css';
-import SwapiService from '../../services/swapi-service';
+
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { StarshipDetails } from '../sw-components';
 
 export default class App extends Component {
   state = {
@@ -27,18 +31,37 @@ export default class App extends Component {
   };
 
   render() {
-    const planet = this.state.showRandomPlanet ? <RandomPlanet /> : null;
-
     return (
       <ErrorBoundary>
         <SwapiServiceProvider value={this.state.swapiService}>
-          <div className='stardb-app'>
-            <Header onServiceChange={this.onServiceChange} />
-            {planet}
-            <PeoplePage />
-            <PlanetsPage />
-            <StarshipsPage />
-          </div>
+          <Router>
+            <div className='stardb-app'>
+              <Header onServiceChange={this.onServiceChange} />
+              <RandomPlanet />
+              <Switch>
+                <Route
+                  exact
+                  path='/'
+                  render={() => <h2>Welcome to Star Database</h2>}
+                />
+                <Route path='/people/:id?' component={PeoplePage} />
+                <Route path='/planets' component={PlanetsPage} />
+                <Route exact path='/starships' component={StarshipsPage} />
+                <Route
+                  path='/starships/:id'
+                  render={({ match }) => {
+                    const { id } = match.params;
+                    return <StarshipDetails itemId={id} />;
+                  }}
+                />
+                <Route
+                  render={() => (
+                    <h2 style={{ textAlign: 'center' }}>Page not found</h2>
+                  )}
+                />
+              </Switch>
+            </div>
+          </Router>
         </SwapiServiceProvider>
       </ErrorBoundary>
     );
